@@ -6,16 +6,17 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+
+// ✅ Browser Router সেটআপ
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <div>Hello world!</div>,
+    element: <App />,   // এখানে App component যুক্ত করো
   },
 ]);
 
-
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-  <RouterProvider router={router} />
+    <RouterProvider router={router} />
   </StrictMode>,
 )
