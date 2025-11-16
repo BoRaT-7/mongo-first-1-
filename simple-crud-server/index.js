@@ -5,7 +5,9 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173",
+}));
 app.use(express.json());
 
 // MongoDB URI
@@ -24,13 +26,13 @@ async function run() {
     await client.connect();
     const userCollection = client.db("simpleCardDB").collection("users");
 
-    // ➤ GET: Send data to client
+    // GET API
     app.get('/users', async (req, res) => {
       const users = await userCollection.find().toArray();
       res.send(users);
     });
 
-    // ➤ POST: Receive data from client
+    // POST API
     app.post('/users', async (req, res) => {
       const user = req.body;
       const result = await userCollection.insertOne(user);
@@ -38,10 +40,10 @@ async function run() {
     });
 
     app.get('/', (req, res) => {
-      res.send("SERVER IS RUNNING");
+      res.send("SERVER IS RUNNING ✔");
     });
 
-    console.log("MongoDB Connected!");
+    console.log("MongoDB Connected ✔");
   } catch (error) {
     console.log(error);
   }
