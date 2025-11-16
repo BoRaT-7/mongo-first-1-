@@ -5,15 +5,12 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// ✅ MongoDB Connection URI
+// MongoDB URI
 const uri = "mongodb+srv://borat156006_db_user:fMzQNQcyg1sQ5VTR@cluster0.i8wpz9p.mongodb.net/?retryWrites=true&w=majority&tls=true&appName=Cluster0";
 
-
-// ✅ MongoClient সেটআপ
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -22,41 +19,36 @@ const client = new MongoClient(uri, {
   },
 });
 
-// ✅ MongoDB Connection
 async function run() {
   try {
     await client.connect();
-    const database = client.db("simpleCardDB"); // তোমার database নাম দাও
-    const userCollection = database.collection("users"); // collection নাম দাও
+    const userCollection = client.db("simpleCardDB").collection("users");
 
-    // ✅ GET API
+    // ➤ GET: Send data to client
     app.get('/users', async (req, res) => {
-      const cursor = userCollection.find();
-      const users = await cursor.toArray();
+      const users = await userCollection.find().toArray();
       res.send(users);
     });
 
-    // ✅ POST API
+    // ➤ POST: Receive data from client
     app.post('/users', async (req, res) => {
       const user = req.body;
       const result = await userCollection.insertOne(user);
       res.send(result);
     });
 
-    // ✅ Root route
     app.get('/', (req, res) => {
-      res.send('SIMPLE CRUD SERVER IS RUNNING ✅');
+      res.send("SERVER IS RUNNING");
     });
 
-    console.log("✅ MongoDB Connected Successfully!");
+    console.log("MongoDB Connected!");
   } catch (error) {
-    console.error("❌ MongoDB Connection Failed:", error);
+    console.log(error);
   }
 }
 
-run().catch(console.dir);
+run();
 
-// ✅ Server listen
 app.listen(port, () => {
-  console.log(`🚀 SIMPLE CRUD IS RUNNING ON PORT: ${port}`);
+  console.log(`SERVER RUNNING ON PORT: ${port}`);
 });
