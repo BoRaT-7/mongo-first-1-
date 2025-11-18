@@ -3,14 +3,15 @@ import { useEffect, useState } from "react";
 function App() {
   const [users, setUsers] = useState([]);
 
-  // ⭐ GET data from server
+  // Load All Users
   useEffect(() => {
     fetch("http://localhost:5000/users")
       .then(res => res.json())
-      .then(data => setUsers(data));
+      .then(data => setUsers(data))
+      .catch(err => console.error("Fetch Error:", err));
   }, []);
 
-  // ⭐ POST data to server
+  // Add New User
   const handleAddUser = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -29,6 +30,7 @@ function App() {
       .then(res => res.json())
       .then(data => {
         console.log("Inserted:", data);
+        setUsers([...users, { _id: data.insertedId, name, email }]); // UI update
         form.reset();
       });
   };
